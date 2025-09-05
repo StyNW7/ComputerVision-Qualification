@@ -16,11 +16,14 @@ try:
 except Exception:
     WEBSUPPORTED = False
 
-st.set_page_config(page_title="CV Mini App (Image/Edge/Shape/Haar + Auto Capture)", layout="wide")
+
+st.set_page_config(page_title="Computer Vision Mini App", layout="wide")
+
 
 # -------------------------
 # Utils / Helper functions
 # -------------------------
+
 
 def to_bytes(img: np.ndarray):
     """Convert OpenCV image (BGR) to bytes for download."""
@@ -91,6 +94,7 @@ def detect_shapes_from_edges(edges, orig_img):
         cv2.putText(img_out, shape_name, (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0,255,0), 2)
     return img_out, shapes
 
+
 # Haarcascade path from cv2 installation
 CASCADE_FACE = cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
 if not os.path.exists(CASCADE_FACE):
@@ -103,7 +107,7 @@ face_cascade = cv2.CascadeClassifier(CASCADE_FACE)
 # -------------------------
 
 
-st.title("Computer Vision Mini App — Image / Edge / Shape / Haarcascade + Auto-capture — Computer Vision Qualification")
+st.title("Computer Vision Qualification — Mini App — Image / Edge / Shape / Haarcascade + Auto-capture")
 st.markdown("""
 Aplikasi demo menggunakan **Python + OpenCV + Streamlit**.  
 Fitur: Image processing, Edge detection (Canny/Sobel), Shape detection (contours), Face detection (Haarcascade), Live auto-capture (jika streamlit-webrtc terpasang), dan filter untuk hasil capture.
@@ -165,12 +169,13 @@ with col2:
                 image = Image.open(cam)
                 frame = pil_to_cv2(image)
     else:
+
         # Live mode using webrtc: realtime detection + auto-capture
         st.info("Live mode: face will be auto-captured when detected. Tekan 'Start' untuk memulai. (Butuh streamlit-webrtc terpasang)")
         start_live = st.button("Start Live Auto-Capture")
         stop_live = st.button("Stop Live")
         captured_images = st.empty()
-        # We'll implement a simple transformer that captures first face detected and saves.
+        
         if WEBSUPPORTED:
             class LiveFaceCapture(VideoTransformerBase):
                 def __init__(self):

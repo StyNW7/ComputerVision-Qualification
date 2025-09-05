@@ -1,4 +1,4 @@
-# Stanley Nathanael Wijaya
+# Stanley Nathanael Wijaya - NW25-1
 
 ## Case
 
@@ -18,3 +18,6 @@ Detect face -> auto capture -> pick filter (blur, etc).
 - File Directory
 - Testing
 - Training
+
+Notes:
+Sejujurnya, kalau menurut aku case sama rubric nya agak terlalu ga keliatan nyambung sih... Meskipun, ada korelasi ya, tapi seharusnya untuk bagian case itu sudah terpenuhi semua untuk semua komponen yang diminta dan semoga memenuhi rubriknya juga :) 😇🙏
