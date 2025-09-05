@@ -1,3 +1,5 @@
+# NW25-1, Stanley Nathanael Wijaya
+
 import streamlit as st
 import cv2
 import numpy as np
@@ -6,7 +8,8 @@ import io
 import os
 import time
 
-# Try to import streamlit-webrtc for live auto-capture; if not available, we'll fallback.
+# Try to import streamlit-webrtc for live auto-capture (But I think there is still some error, however there is no need based on the qualification case)
+
 try:
     from streamlit_webrtc import webrtc_streamer, VideoTransformerBase, WebRtcMode
     WEBSUPPORTED = True
@@ -18,6 +21,7 @@ st.set_page_config(page_title="CV Mini App (Image/Edge/Shape/Haar + Auto Capture
 # -------------------------
 # Utils / Helper functions
 # -------------------------
+
 def to_bytes(img: np.ndarray):
     """Convert OpenCV image (BGR) to bytes for download."""
     img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -93,10 +97,13 @@ if not os.path.exists(CASCADE_FACE):
     st.error("Haarcascade face file not found in cv2.data.haarcascades. Pastikan OpenCV terinstal dengan benar.")
 face_cascade = cv2.CascadeClassifier(CASCADE_FACE)
 
+
 # -------------------------
-# Streamlit UI
+# Streamlit UI (Bonus: for application)
 # -------------------------
-st.title("📸 Computer Vision Mini App — Image / Edge / Shape / Haarcascade + Auto-capture")
+
+
+st.title("Computer Vision Mini App — Image / Edge / Shape / Haarcascade + Auto-capture — Computer Vision Qualification")
 st.markdown("""
 Aplikasi demo menggunakan **Python + OpenCV + Streamlit**.  
 Fitur: Image processing, Edge detection (Canny/Sobel), Shape detection (contours), Face detection (Haarcascade), Live auto-capture (jika streamlit-webrtc terpasang), dan filter untuk hasil capture.
@@ -199,9 +206,9 @@ with col2:
                 webrtc_ctx = webrtc_streamer(
                     key="live-face",
                     mode=WebRtcMode.SENDRECV,
-                    video_transformer_factory=LiveFaceCapture,
+                    video_processor_factory=LiveFaceCapture,
                     media_stream_constraints={"video": True, "audio": False},
-                    async_transform=True,
+                    async_processing=True,
                 )
 
     # If we have a static frame (from upload or camera)
@@ -209,7 +216,7 @@ with col2:
         display_col1, display_col2 = st.columns(2)
         with display_col1:
             st.subheader("Original / Input")
-            st.image(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB), use_column_width=True)
+            st.image(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB), use_container_width=True)
         # Process according to options
         proc = frame.copy()
         if do_resize:
@@ -254,7 +261,7 @@ with col2:
         # Show processed results
         with display_col2:
             st.subheader("Processed")
-            st.image(cv2.cvtColor(proc, cv2.COLOR_BGR2RGB), use_column_width=True)
+            st.image(cv2.cvtColor(proc, cv2.COLOR_BGR2RGB), use_container_width=True)
 
         st.write("---")
         st.subheader("Edge / Shape / Face details (results)")
@@ -281,19 +288,17 @@ with col2:
             st.markdown("**Faces (Haarcascade)**")
             if len(faces) > 0:
                 st.write(f"Detected {len(faces)} face(s)")
-                # show crops
-                face_cols = st.columns(len(faces))
-                for idx, (x,y,w,h) in enumerate(faces):
+                for idx, (x, y, w, h) in enumerate(faces):
                     crop = proc[y:y+h, x:x+w]
-                    face_cols[idx].image(cv2.cvtColor(crop, cv2.COLOR_BGR2RGB), caption=f"Face {idx+1}")
-                    # Offer individual save
-                    if face_cols[idx].button(f"Save face {idx+1}"):
+                    st.image(cv2.cvtColor(crop, cv2.COLOR_BGR2RGB), caption=f"Face {idx+1}")
+                    if st.button(f"Save face {idx+1}", key=f"save_{idx}"):
                         os.makedirs(auto_save_dir, exist_ok=True)
                         name = os.path.join(auto_save_dir, f"face_{int(time.time())}_{idx}.jpg")
                         cv2.imwrite(name, crop)
                         st.success(f"Saved {name}")
             else:
                 st.info("No face detected")
+
 
         st.write("---")
         st.subheader("Capture & Apply Filter")
