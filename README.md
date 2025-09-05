@@ -1,5 +1,8 @@
 # Stanley Nathanael Wijaya - NW25-1
 
+To start the application please make sure you are at the same directory with the app.py file and then run this command
+<code>streamlit run app.py</code>
+
 ## Case
 
 Make application which follows the following specifications:
